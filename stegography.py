@@ -8,6 +8,9 @@ def encoder(image_path, message):
     if len(binary_message) > image.width * image.height * 3:
         raise ValueError("Message is too long!!")
 
+    delimiter = '1111111111111110'
+    binary_message += delimiter
+
     encoded_pixels = image.getdata()
     index = 0
 
@@ -29,8 +32,13 @@ def decoder(encoded_image_path):
     binary = ""
     pix_data = image.getdata()
 
+    delimiter = '1111111111111110'
+
+
     for pixel in pix_data:
         binary += str(pixel[-1])
+        if binary[-len(delimiter):] == delimiter:
+            break
 
 
     message = ""
@@ -42,7 +50,7 @@ def decoder(encoded_image_path):
     return 0
 
 def main():
-    message = "hello"
+    message = "Debug Debug"
     image_path = "steg_image.png"
     encoded_image_path = "encoded_image.png"
     encoder(image_path, message)
