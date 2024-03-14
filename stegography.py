@@ -1,7 +1,7 @@
 from PIL import Image
 
 
-def encode(image_path, message):
+def encoder(image_path, message):
     image = Image.open(image_path)
 
     binary_message = ''.join(format(ord(char), '08b') for char in message)
@@ -23,12 +23,31 @@ def encode(image_path, message):
     encoded_img.putdata(encoded_list)
     encoded_img.save("encoded_image.png")
 
-    pass
+
+def decoder(encoded_image_path):
+    image = Image.open(encoded_image_path)
+    binary = ""
+    pix_data = image.getdata()
+
+    for pixel in pix_data:
+        binary += str(pixel[-1])
 
 
+    message = ""
+    for i in range(0, len(binary), 8):
+        message_byte = binary[i:i + 8]
+        message += chr(int(message_byte, 2))
+
+    print(message)
+    return 0
+
+def main():
+    message = "hello"
+    image_path = "steg_image.png"
+    encoded_image_path = "encoded_image.png"
+    encoder(image_path, message)
+    decoder(encoded_image_path)
 
 
-message = "hello"
-image_path = "steg_image.png"
-
-encode(image_path, message)
+if __name__ == "__main__":
+    main()
